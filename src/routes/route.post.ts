@@ -16,10 +16,15 @@ router.post("/create", async (req: Request, res: Response, next: NextFunction) =
                 content,
                 autherId
             }
-        });
+        }).then(() => {
+            prisma.$disconnect();
+        }).catch(err => {
+            console.log("Got Err");
+            prisma.$disconnect();
+        }).finally(() => prisma.$disconnect());
 
         console.log(createTodo);
-        
+
         res.status(201).json({
             success: true,
             data: createTodo,
