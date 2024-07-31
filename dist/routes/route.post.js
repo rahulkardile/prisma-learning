@@ -42,4 +42,31 @@ router.post("/create", (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         next(error);
     }
 }));
+router.delete("/delete", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = req.query.id;
+        const find = yield prisma.post.findUnique({
+            where: {
+                id: Number(id)
+            }
+        });
+        if (!(find === null || find === void 0 ? void 0 : find.id))
+            return res.status(404).json({
+                success: false,
+                message: "todo not found"
+            });
+        const data = yield prisma.post.delete({
+            where: {
+                id: Number(id)
+            }
+        });
+        res.status(200).json({
+            success: true,
+            data
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+}));
 exports.default = router;

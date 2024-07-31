@@ -36,4 +36,36 @@ router.post("/create", async (req: Request, res: Response, next: NextFunction) =
     }
 })
 
+router.delete("/delete", async (req, res, next) => {
+    try {
+
+        const id = req.query.id;
+        
+        const find = await prisma.post.findUnique({
+            where: {
+                id: Number(id)
+            }
+        });
+
+        if (!find?.id) return res.status(404).json({
+            success: false,
+            message: "todo not found"
+        });
+
+        const data = await prisma.post.delete({
+            where: {
+                id: Number(id)
+            }
+        });
+
+        res.status(200).json({
+            success: true,
+            data
+        });
+
+    } catch (error) {
+        next(error);
+    }
+});
+
 export default router;
