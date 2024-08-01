@@ -14,8 +14,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const client_1 = require("@prisma/client");
-const prisma = new client_1.PrismaClient();
+const prisma = new client_1.PrismaClient({
+    log: ["info", "query"]
+});
 const router = express_1.default.Router();
+router.get("/get", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = yield prisma.post.findMany({});
+        res.status(200).json({
+            succuss: true,
+            data
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+}));
 router.post("/create", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { title, content, autherId } = req.body;
@@ -36,6 +50,64 @@ router.post("/create", (req, res, next) => __awaiter(void 0, void 0, void 0, fun
             success: true,
             data: createTodo,
             message: "todo has been created!",
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+}));
+router.put("/update-published", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = req.query.id;
+        const post = yield prisma.post.findUnique({
+            where: {
+                id: Number(id)
+            }
+        });
+        if ((post === null || post === void 0 ? void 0 : post.published) === true) {
+            const data = yield prisma.post.update({
+                where: {
+                    id: Number(id)
+                },
+                data: {
+                    published: false
+                }
+            });
+            res.status(200).json({
+                success: true,
+                data
+            });
+        }
+        else {
+            const data = yield prisma.post.update({
+                where: {
+                    id: Number(id)
+                },
+                data: {
+                    published: true
+                }
+            });
+            res.status(200).json({
+                success: true,
+                data
+            });
+        }
+    }
+    catch (error) {
+        next(error);
+    }
+}));
+router.get("/pagination", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const resData = yield prisma.post.findMany({
+            // how much content page should take
+            take: 2,
+            //page
+            skip: 0
+        });
+        res.status(200).json({
+            success: true,
+            resData
         });
     }
     catch (error) {

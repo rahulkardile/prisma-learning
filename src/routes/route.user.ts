@@ -60,6 +60,39 @@ router.get("/getUser", async (req, res, next) => {
     } catch (error) {
         next(error);
     }
+});
+
+router.get("/advance", async(req,res, next)=> {
+    try {
+        
+        const resData = await prisma.user.findMany({
+            where: {
+                email: {
+                    endsWith: "gmail.com",
+                },
+                posts: {
+                    some: {
+                        published: true
+                    }
+                }
+            },
+            include: {
+                posts: {
+                    where: {
+                        published: true
+                    }
+                }
+            }
+        })
+
+        res.status(200).json({
+            success: true,
+            resData
+        })
+
+    } catch (error) {
+        next(error);
+    }
 })
 
 router.put("/update", async(req, res, next)=>{

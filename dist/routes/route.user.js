@@ -65,6 +65,36 @@ router.get("/getUser", (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         next(error);
     }
 }));
+router.get("/advance", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const resData = yield prisma.user.findMany({
+            where: {
+                email: {
+                    endsWith: "gmail.com",
+                },
+                posts: {
+                    some: {
+                        published: true
+                    }
+                }
+            },
+            include: {
+                posts: {
+                    where: {
+                        published: true
+                    }
+                }
+            }
+        });
+        res.status(200).json({
+            success: true,
+            resData
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+}));
 router.put("/update", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.query.id;
