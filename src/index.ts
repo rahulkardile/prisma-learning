@@ -42,7 +42,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction)=>{
         message,
         statusCode
     })
-
 })
 
 app.listen(PORT, () => console.log(`server is running at ${PORT} . . .`));
