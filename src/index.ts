@@ -33,4 +33,16 @@ app.use("*", (req: Request, res: Response, next: NextFunction)=>{
     }
 })
 
+app.use((err: Error, req: Request, res: Response, next: NextFunction)=>{
+    const statusCode = 500;
+    let message = err.message || "Internal Server Error!";
+
+    return res.status(statusCode).json({
+        success: false,
+        message,
+        statusCode
+    })
+
+})
+
 app.listen(PORT, () => console.log(`server is running at ${PORT} . . .`));
