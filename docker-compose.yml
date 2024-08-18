@@ -1,22 +1,22 @@
-version: '1.0.0'
+version: '1.0'
 services:
   mongodb: 
-    image: 'mongo'
-    container_name: cool-mongo
+    image: mongo
+    container_name: mongodb
     ports:
       - "27017:27017"
     volumes:
-      - "mongodb_data:/data/db"
+      - mongodb_data:/data/db
     
   backend: 
-    image: 'backend'
+    image: backend
     container_name: backend_application
     depends_on:
-      - cool-mongo
+      - mongodb
     ports:
       - "3000:3000"
     environment:
-      MONGO_URL: "mongodb://cool-mongo:27017/myDatabase"
+      MONGO_URL: "mongodb://mongodb:27017/myDatabase"
 
 volumes:
   mongodb_data: 
